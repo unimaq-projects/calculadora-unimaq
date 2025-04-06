@@ -36,18 +36,18 @@ const preliminarySavings = computed(() => newActualPrice.value - ccrActualListPr
 const savingPercentage = computed(() => (ccrActualListPrice.value / newActualPrice.value) * 100);
 
 /*Capex Data*/
-const capexCcrActualPrice = computed(() => `Precio CCR - ${EquipmentEnum[calculatorModel.value.equipment]?.label || ""}: ${Formatter.currency(ccrActualListPrice.value)}`);
-const capexCcrListPrice = computed(() => `Precio de Lista: ${Formatter.currency(ccrListPrice.value)}`);
+const capexCcrActualPrice = computed(() => Formatter.currency(ccrActualListPrice.value));
+const capexCcrListPrice = computed(() => Formatter.currency(ccrListPrice.value));
 const capexCcrInterestRate = computed(() => "Tasa de interés: 0%");
 const capexCcrDiscount = computed(() => `Descuento: ${Formatter.currency(ccrDiscount.value)}`);
 
-const capexNewListPrice = computed(() => `Precio de Lista: ${Formatter.currency(newListPrice.value)}`);
-const capexNewActualPrice = computed(() => `Precio Nuevo - ${EquipmentEnum[calculatorModel.value.equipment]?.label || ""}: ${Formatter.currency(newActualPrice.value)}`);
-const capexNewInterestRate = computed(() => `Tasa de interés: ${newInterestRatePercentage.value}% (${Formatter.currency(newInterestRateValue.value)})`);
+const capexNewActualPrice = computed(() => Formatter.currency(newActualPrice.value));
+const capexNewListPrice = computed(() => Formatter.currency(newListPrice.value));
+const capexNewInterestRate = computed(() => Formatter.currency(newInterestRateValue.value));
 const capexNewDiscount = computed(() => `Descuento: ${Formatter.currency(newDiscount.value)}`);
 
-const capexPreliminarySavings = computed(() => `Ahorro Preliminar: ${Formatter.currency(preliminarySavings?.value || 0)}`);
-const capexSavingPercentage = computed(() => `Ahorro en Porcentaje: ${Formatter.percentage(savingPercentage?.value || 0)}`);
+const capexPreliminarySavings = computed(() => Formatter.currency(preliminarySavings?.value || 0));
+const capexSavingPercentage = computed(() => Formatter.percentage(savingPercentage?.value || 0));
 
 /*Summary Opex Data*/
 const warranty = computed(() => EquipmentEnum[calculatorModel.value.equipment]?.epp);
@@ -79,13 +79,13 @@ const sumOfBenefits = computed(() => (warranty.value + cva500.value + mantto.val
 const totalSavings = computed(() => preliminarySavings.value + sumOfBenefits.value);
 
 /*Opex Data*/
-const opexWarranty = computed(() => `Garantía extendida de 2 años: ${Formatter.currency(warranty?.value || 0)}`);
-const opexCva500 = computed(() => `CVA 500+ (2 eventos): ${Formatter.currency(cva500?.value || 0)}`);
-const opexMantto = computed(() => `Descuento de Partes de Mantto: ${Formatter.currency(mantto?.value || 0) }`);
-const opexRepairPartsDiscount = computed(() => `Descuento de Partes de Reparación: ${Formatter.currency(repairPartsDiscount?.value || 0)}`);
-const opexCut = computed(() => `Descuento de H. Corte: ${Formatter.currency(cut?.value|| 0)}`);
-const opexSumOfBenefits = computed(() => `Total de Beneficio por Otros Ahorros: ${Formatter.currency(sumOfBenefits?.value || 0)}`);
-const opexTotalSavings = computed(() => `Ahorro Total: ${Formatter.currency(totalSavings?.value || 0)}`);
+const opexWarranty = computed(() => Formatter.currency(warranty?.value || 0));
+const opexCva500 = computed(() => Formatter.currency(cva500?.value || 0));
+const opexMantto = computed(() => Formatter.currency(mantto?.value || 0));
+const opexRepairPartsDiscount = computed(() => Formatter.currency(repairPartsDiscount?.value || 0));
+const opexCut = computed(() => Formatter.currency(cut?.value|| 0));
+const opexSumOfBenefits = computed(() => Formatter.currency(sumOfBenefits?.value || 0));
+const opexTotalSavings = computed(() => Formatter.currency(totalSavings?.value || 0));
 /*Graph*/
 const graphData = ref();
 const graphOptions = ref();
@@ -142,127 +142,151 @@ const setChartOptions = () => {
 <template>
   <div class="background">
     <nav>
-      <h2 style="font-size: xx-large">UNIMAQ</h2>
+      <h1 class="nav-bar-title">UNIMAQ</h1>
     </nav>
     <main class="content">
       <aside class="data-side">
-        <article class="data-container">
+        <article class="data-container equipment-data">
           <h3 class="data-title">DATOS DE EQUIPO Y FLOTA</h3>
           <div class="data-form">
-            <div class="form-item">
-              <label>Equipo para CCR</label>
-              <select id="ccr-equipment" v-model="calculatorModel.equipment" class="input-field">
-                <option v-for="ccr in ccrEquipmentArray" :key="ccr.value" :value="ccr.value">
-                  {{ccr.label}}
-                </option>
-              </select>
-              <label>Serie</label>
-              <input type="text" class="input-field" />
-            </div>
+            <section class="form-grid-equipment">
+              <pv-float-label variant="on">
+                <pv-select id="select-equipment" v-model="calculatorModel.equipment" size="small" style="width: 100%"
+                           :options="ccrEquipmentArray" optionLabel="label" optionValue="value" />
+                <label for="select-equipment">Equipo para CCR</label>
+              </pv-float-label>
+              <pv-float-label variant="on">
+                <pv-input id="input-series-number" type="text" size="small" v-model="calculatorModel.serie" style="width: 100%"/>
+                <label for="input-series-number" size="small">Número de Serie</label>
+              </pv-float-label>
+            </section>
             <h4 class="form-subtitle">Cantidad de Parque Mod</h4>
-            <div class="form-park-mod-grid">
-              <label>Excavadora</label>
-              <input type="number" min="0" step="1" class="input-field" @input="calculatorModel.numExcavator = NumberValidator.validateInterval($event.target.value)"
-                     v-model="calculatorModel.numExcavator"/>
-              <label>Mini Cargador</label>
-              <input type="number" min="0" step="1" class="input-field" @input="calculatorModel.numSkidSteer = NumberValidator.validateInterval($event.target.value)"
-                     v-model="calculatorModel.numSkidSteer"/>
-              <label>Retro Excavadora</label>
-              <input type="number" min="0" step="1" class="input-field" @input="calculatorModel.numRetroExcavator = NumberValidator.validateInterval($event.target.value)"
-                     v-model="calculatorModel.numRetroExcavator" />
-              <label>Cargador Frontal</label>
-              <input type="number" min="0" step="1" class="input-field" @input="calculatorModel.numFrontLoader = NumberValidator.validateInterval($event.target.value)"
-                     v-model="calculatorModel.numFrontLoader"/>
-            </div>
+            <section class="form-grid-park">
+              <pv-float-label variant="on">
+                <pv-input id="input-excavator" type="number" min="0" step="1" v-model="calculatorModel.numExcavator" style="width: 100%"
+                          @input="calculatorModel.numExcavator = NumberValidator.validateInterval($event.target.value)"></pv-input>
+                <label for="input-excavator">Excavadora</label>
+              </pv-float-label>
+              <pv-float-label variant="on">
+                <pv-input id="input-retro-excavator" type="number" min="0" step="1" v-model="calculatorModel.numRetroExcavator" style="width: 100%"
+                          @input="calculatorModel.numRetroExcavator = NumberValidator.validateInterval($event.target.value)"></pv-input>
+                <label for="input-retro-excavator">Retro Excavadora</label>
+              </pv-float-label>
+              <pv-float-label variant="on">
+                <pv-input id="input-skid-steer" type="number" min="0" step="1" v-model="calculatorModel.numSkidSteer" style="width: 100%"
+                          @input="calculatorModel.numSkidSteer = NumberValidator.validateInterval($event.target.value)"></pv-input>
+                <label for="input-skid-steer">Mini Cargador</label>
+              </pv-float-label>
+              <pv-float-label variant="on">
+                <pv-input id="input-front-loader" type="number" min="0" step="1" v-model="calculatorModel.numFrontLoader" style="width: 100%"
+                          @input="calculatorModel.numFrontLoader = NumberValidator.validateInterval($event.target.value)"/>
+                <label for="input-front-loader">Cargador Frontal</label>
+              </pv-float-label>
+            </section>
           </div>
         </article>
-        <article class="data-container">
-          <h3 class="data-title">DESCUENTO Y FINANCIAMIENTO</h3>
+        <article class="data-container price-data">
+          <h3 class="data-title">COMPARATIVA DE PRECIOS</h3>
           <div class="dscto-finz-grid">
             <!--Row 1-->
-            <div></div>
-            <h5 style="text-align: center">CCR - {{ EquipmentEnum[calculatorModel.equipment]?.label }}</h5>
-            <h5 style="text-align: center">Equipo Nuevo</h5>
+            <div class="dscto-finz-grid-singular-row"></div>
+            <h4 class="form-sub-subtitle">CCR - {{ EquipmentEnum[calculatorModel.equipment]?.label }}</h4>
+            <h4 class="form-sub-subtitle">Equipo Nuevo</h4>
             <!--Row 2-->
-            <label> Descuento </label>
-            <input type="number" min="0" max="100" step="1" class="input-field" @input="calculatorModel.discountCCR = NumberValidator.validateInterval($event.target.value)"
-                   v-model="calculatorModel.discountCCR"/>
-            <input type="number" min="0" max="100" step="1" class="input-field" @input="calculatorModel.discountNew = NumberValidator.validateInterval($event.target.value)"
-                   v-model="calculatorModel.discountNew"/>
+            <h4 class="dscto-finz-grid-singular-row">Precio de Lista</h4>
+            <h4 class="price">{{capexCcrListPrice}}</h4>
+            <h4 class="price">{{capexNewListPrice}}</h4>
             <!--Row 3-->
-            <label> Medio de Pago </label>
-            <select id="payment-types-ccr" v-model="calculatorModel.paymentTypeCCR" class="input-field">
-              <option v-for="payment in paymentTypesArray" :key="payment.value" :value="payment.value">
-                {{payment.label}}
-              </option>
-            </select>
-            <select id="payment-types-new" v-model="calculatorModel.paymentTypeNew" class="input-field">
-              <option v-for="payment in paymentTypesArray" :key="payment.value" :value="payment.value">
-                {{payment.label}}
-              </option>
-            </select>
+            <h4 class="dscto-finz-grid-singular-row"> Descuento (%)</h4>
+            <pv-float-label variant="on">
+              <pv-input type="number" min="0" max="100" step="1" v-model="calculatorModel.discountCCR" style="width: 100%"
+                        @input="calculatorModel.discountCCR = NumberValidator.validateInterval($event.target.value)"/>
+            </pv-float-label>
+            <pv-float-label variant="on">
+              <pv-input type="number" min="0" max="100" step="1" v-model="calculatorModel.discountNew" style="width: 100%"
+                        @input="calculatorModel.discountNew = NumberValidator.validateInterval($event.target.value)"/>
+            </pv-float-label>
             <!--Row 4-->
+            <h4 class="dscto-finz-grid-singular-row"> Medio de Pago </h4>
+            <pv-select v-model="calculatorModel.paymentTypeCCR" size="small" style="width: 100%"
+                       :options="paymentTypesArray" option-label="label" optionValue="value"/>
+            <pv-select v-model="calculatorModel.paymentTypeNew" size="small" style="width: 100%"
+                       :options="paymentTypesArray" option-label="label" optionValue="value"/>
+            <!--Row 5-->
+            <h4 class="dscto-finz-grid-singular-row"> Tasa Utilizada </h4>
             <div></div>
-            <label class="tasa-utilizada"> Tasa Utilizada </label>
-            <input type="number" v-model="calculatorModel.interestRate" class="input-field" />
-            <label class="full-width"> Validez de Promocode </label>
-            <select  id="val-promo-select" v-model="calculatorModel.promocode" class="input-field">
-              <option v-for="promo in promocodeArray" :key="promo.value" :value="promo.value">
-                {{promo.label}}
-              </option>
-            </select>
+            <pv-input type="number" v-model="calculatorModel.interestRate"/>
+            <!--Row 6-->
+            <h4 class="dscto-finz-grid-singular-row">Tasa en Dólares</h4>
+            <div></div>
+            <h4 class="price">{{capexNewInterestRate}}</h4>
+            <!--Row 7-->
+            <h4 class="dscto-finz-grid-singular-row">Validez de Promocode</h4>
+            <div class="promocode">
+              <pv-float-label variant="on">
+                <pv-select id="val-promo-select" v-model="calculatorModel.promocode"
+                           :options="promocodeArray" optionLabel="label" optionValue="value" style="width: 100%"></pv-select>
+                <label for="val-promo-select">Meses</label>
+              </pv-float-label>
+            </div>
           </div>
         </article>
       </aside>
       <aside class="benefits-side">
-        <div>
+        <article>
           <div class="capex">
-            <header>
-              <h1>Ahorro en Capex</h1>
-            </header>
+            <h3 class="data-title">AHORRO EN CAPEX</h3>
             <main>
-              <div>
-                <details>
-                  <summary>{{capexCcrActualPrice}}</summary>
-                  <p>{{ capexCcrListPrice }}</p>
-                  <p>{{capexCcrInterestRate}}</p>
-                  <p>{{capexCcrDiscount}}</p>
-                </details>
-                <details>
-                  <summary>{{capexNewActualPrice}}</summary>
-                  <p>{{ capexNewListPrice }}</p>
-                  <p>{{capexNewInterestRate}}</p>
-                  <p>{{capexNewDiscount}}</p>
-                </details>
+              <div class="capex-price">
+                <h3 class="capex-label">CCR - {{ EquipmentEnum[calculatorModel.equipment]?.label }}</h3>
+                <h3>{{capexCcrActualPrice}}</h3>
               </div>
-              <h1>{{capexPreliminarySavings}}</h1>
-              <p>{{capexSavingPercentage}}</p>
+              <div class="capex-price">
+                <h3 class="capex-label">EQUIPO NUEVO</h3>
+                <h3>{{capexNewActualPrice}}</h3>
+              </div>
+              <div class="capex-price preliminary-savings">
+                <h1 class="capex-savings-label">Ahorro Preliminar</h1>
+                <div class="capex-saving-info-label">
+                  <h3 style="color: var(--green-color)">{{capexPreliminarySavings}}</h3> <h3>{{capexSavingPercentage}}</h3>
+                </div>
+              </div>
             </main>
           </div>
           <div class="divider"></div>
           <div class="opex">
-            <header>
-              <h1>Ahorro en Opex</h1>
-            </header>
+            <h1 class="data-title">AHORRO EN OPEX</h1>
             <main>
-              <aside>
-                <div>
-                  <h5>{{opexWarranty}}</h5>
-                  <h5>{{opexCva500}}</h5>
-                  <h5>{{opexMantto}}</h5>
-                  <h5>{{opexRepairPartsDiscount}}</h5>
-                  <h5>{{opexCut}}</h5>
-                  <div class="divider"></div>
-                  <h5>{{opexSumOfBenefits}}</h5>
+              <aside class="opex-info-side">
+                <div class="opex-grid">
+                  <p>Garantía extendida de 2 años:</p> <p>{{opexWarranty}}</p>
+                  <p>CVA 500+ (2 eventos):</p> <p>{{opexCva500}}</p>
+                  <p>Descuento de Partes de Mantto:</p> <p>{{opexMantto}}</p>
+                  <p>Descuento de Partes de Reparación:</p> <p>{{opexRepairPartsDiscount}}</p>
+                  <p>Descuento de H. Corte:</p> <p>{{opexCut}}</p>
+                  <div class="divider" id="opex-grid-divider"></div>
+                  <p>Total de Beneficio por Otros Ahorros:</p> <p>{{opexSumOfBenefits}}</p>
+                  <small style="grid-column: 1 / span 2; font-size: x-small">*Garantía extendida 24 meses / 4000 horas a Tren de Fuerza y Sistema Hidráulico</small>
                 </div>
               </aside>
-              <aside>
-                <pv-chart type="bar" :data="graphData" :options="graphOptions"/>
-                <h5>{{opexTotalSavings }}</h5>
+              <aside class="opex-summary-side">
+                <section class="opex-info-promocode">
+                  <p>Por el promocode:</p>
+                  <p>25% Descuento Repuestos CAT</p>
+                  <p>45% Descuento H. Corte CAT</p>
+                  <p>20% Descuento Lubricantes CAT</p>
+                </section>
+                <section class="opex-info-graph">
+                  <pv-chart type="bar" :data="graphData" :options="graphOptions"/>
+                </section>
+                <section class="opex-info-savings">
+                  <h5 style="background-color: black; padding: 0.2rem">AHORRO TOTAL</h5>
+                  <h5 style="background-color: var(--unimaq-color); padding: 0.8rem">{{opexTotalSavings }}</h5>
+                </section>
               </aside>
             </main>
           </div>
-        </div>
+        </article>
       </aside>
     </main>
   </div>
@@ -270,30 +294,28 @@ const setChartOptions = () => {
 
 <style scoped>
 .background{
-  width: 100%;
-  height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
 nav{
-  width: 100vw;
+  width: 100%;
   background: linear-gradient(to right, #B61D1F 0%, #B61D1F 70%, #E1B524 70%, #E1B524 100%);
   border-bottom: 4px solid black;
   color: white;
 }
 
-nav>h2{
-  padding: 0.4rem;
+.nav-bar-title{
+  font-size: xx-large;
+  padding: 0.5rem;
 }
 
 .content{
-  width: 80%;
-  height: 100%;
+  width: 90%;
   display: flex;
   flex-direction: row;
-  gap: 5rem;
+  gap: 2rem;
   margin: 1rem;
 }
 
@@ -301,74 +323,55 @@ nav>h2{
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  width: 40%;
+  width: 45%;
 }
 
 .data-container{
   padding: 1rem;
-  border: 5px solid var(--unimaq-dark-color);
   border-radius: 10px;
-  box-shadow: inset 0 0 10px 1px rgba(0, 0, 0, 0.4), 4px 2px 4px 0 rgba(0,0,0,0.3);
+  box-shadow: inset 0 0 4px 2px rgba(0, 0, 0, 0.2), 4px 4px 4px 0 rgba(0,0,0,0.2);
   color: white;
+}
+
+.equipment-data{
+  border: 5px solid var(--unimaq-dark-color);
   background-color: var(--unimaq-color);
+}
+
+.price-data{
+  border: 5px solid var(--cat-dark-color);
+  background-color: var(--cat-color);
 }
 
 .data-title{
   text-align: center;
   font-weight: bolder;
   margin-bottom: 1rem;
+  color: white;
+  font-size: x-large;
+  font-family: "Arial Black",sans-serif;
+  -webkit-text-stroke: 1px black;
 }
 
-.form-item{
-  display: grid;
-  grid-template-columns: 40% 60%;
-  row-gap: 1rem;
-  align-items: center;
-  justify-content: center;
-}
-
-label{
-  text-align: right;
-  margin-right: 1rem;
-  font-weight: bold;
-}
-
-input, select{
+.form-grid-equipment{
   width: 100%;
-  padding: 0.2rem;
-  border-radius: 4px;
-  border: 3px solid var(--gray-color);
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-gap: 1rem;
 }
 
-input{
-  height: 30px;
-  transition: scale 0.1s ease-in-out, border 0.2s ease-in-out;
-}
-
-input:focus{
-  outline: none;
-  border: 3px solid var(--gray-color-hover);
-  scale: 1.02;
-}
-
-select{
-  transition: border 0.2s ease-in-out;
-}
-
-select:focus{
-  border: 3px solid var(--gray-color-hover);
+.form-grid-park{
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
 }
 
 .form-subtitle{
   margin: 1rem 0 1rem 0;
-}
-
-.form-park-mod-grid{
-  display: grid;
-  align-items: center;
-  justify-content: center;
-  grid-template-columns: 30% 20% 30% 20%;
-  row-gap: 1rem;
+  font-size: large;
+  font-weight: bolder;
+  -webkit-text-stroke: 1px black;
 }
 
 .dscto-finz-grid{
@@ -378,56 +381,109 @@ select:focus{
   justify-content: center;
   row-gap: 0.5rem;
   column-gap: 0.4rem;
+  color: #393939;
 }
 
-.tasa-utilizada{
-  grid-column-start: 1;
-  grid-column-end: 3;
+
+.form-sub-subtitle,.price{
+  color: white;
+  text-align: center;
 }
 
-#val-promo-select{
-  grid-column-start: 2;
-  grid-column-end: 4;
+.form-sub-subtitle{
+  -webkit-text-stroke: 1px black;
+}
+
+.promocode{
+  grid-column: 2 / span 2;
 }
 
 .benefits-side{
-  width: 60%;
+  width: 55%;
+}
+
+.benefits-side>article {
+  background-color: white;
+  padding: 1rem;
+  height: 100%;
+  width: 100%;
+  border-radius: 10px;
+  box-shadow: 0 0 4px 0 rgba(0,0,0,0.4);
+}
+
+.capex{
+  margin-bottom: 1rem;
+}
+
+.capex>main{
+  display: grid;
+  grid-template-columns: 25% 25% 50%;
+  align-items: center;
+  grid-gap: 1rem;
+}
+
+.capex-price{
+  text-align: center;
+}
+
+.capex-label{
+  border-radius: 10px;
+  padding: 0.2rem 0 0.2rem 0;
+  background-color: var(--gray-color);
+}
+
+.capex-savings-label{
+  font-size: x-large;
+  font-weight: bolder;
+  color: var(--green-color);
+}
+
+.capex-saving-info-label{
+  display: flex;
+  justify-content: center;
+  flex-direction: row;
+  gap: 1rem;
 }
 
 .divider{
   width: 100%;
   background-color: var(--gray-color);
   height: 2px;
+}
+
+.opex{
   margin-top: 1rem;
-}
-
-.capex, .opex{
-  display: flex;
-  flex-direction: column;
-}
-
-.capex>header, .opex>header{
-  padding: 1rem;
-  text-align: center;
-}
-
-.capex>main{
-  display: flex;
-  flex-direction: column;
-}
-
-.capex>main>div{
-  display: grid;
-  grid-template-columns: 50% 50%;
-  grid-gap: 1rem;
 }
 
 .opex>main{
   display: grid;
-  grid-template-columns: 40% 60%;
+  grid-template-columns: 2fr 3fr;
+  grid-column-gap: 2rem;
 }
 
-@media (max-width: 900px) {
+.opex-grid{
+  display: grid;
+  grid-template-columns: 3fr 2fr;
+  grid-gap: 1rem;
+  text-align: left;
+}
+
+#opex-grid-divider{
+  grid-column: 1 / span 2;
+}
+
+.opex-info-promocode{
+  font-weight: bold;
+  color: var(--cat-color);
+}
+
+.opex-info-savings{
+  text-align: center;
+  font-size: xx-large;
+  color: white;
+}
+
+@media (max-width: 1000px) {
   .content{
     flex-direction: column;
   }
@@ -436,4 +492,64 @@ select:focus{
     width: 100%;
   }
 }
+
+@media (max-width: 870px){
+  .opex, .opex>main{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .opex>main>aside{
+    margin: 1rem 0 1rem 0;
+  }
+}
+
+@media (max-width: 800px){
+  .capex>main{
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .preliminary-savings{
+    grid-column: 1 / span 2;
+  }
+}
+
+@media (max-width: 630px){
+  .form-grid-park{
+    flex-wrap: wrap;
+  }
+  .p-floatlabel{
+    min-width: 48%;
+  }
+}
+
+@media(max-width: 592px){
+  .form-grid-park{
+    gap: 1rem;
+  }
+  .p-floatlabel{
+    width: 100%;
+  }
+}
+
+@media(max-width: 460px){
+  .form-grid-equipment{
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+@media(max-width: 440px){
+  .dscto-finz-grid{
+    grid-template-columns: 50% 50%;
+  }
+  .promocode{
+    grid-column: auto;
+  }
+  .dscto-finz-grid-singular-row, .promocode{
+    grid-column-end: span 3;
+  }
+}
+
 </style>
