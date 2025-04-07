@@ -199,7 +199,7 @@ const setChartOptions = () => {
             <!--Row 3-->
             <h4 class="dscto-finz-grid-singular-row"> Descuento (%)</h4>
             <pv-float-label variant="on">
-              <pv-input type="number" min="0" max="100" step="1" v-model="calculatorModel.discountCCR" style="width: 100%"
+              <pv-input type="number" min="0" max="5" step="1" v-model="calculatorModel.discountCCR" style="width: 100%"
                         @input="calculatorModel.discountCCR = NumberValidator.validateInterval($event.target.value)"/>
             </pv-float-label>
             <pv-float-label variant="on">
