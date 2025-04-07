@@ -41,6 +41,8 @@ function goToCalculator(){
   justify-content: center;
   /*Margin*/
   gap: 1rem;
+  /*Text*/
+  text-align: center;
   /*Color*/
   color: white;
   background: linear-gradient(to top,#00000082, #00000028);

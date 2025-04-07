@@ -215,7 +215,8 @@ const setChartOptions = () => {
             <!--Row 5-->
             <h4 class="dscto-finz-grid-singular-row"> Tasa Utilizada </h4>
             <div></div>
-            <pv-input type="number" v-model="calculatorModel.interestRate"/>
+            <pv-input type="number" min="0" max="100" step="1" v-model="calculatorModel.interestRate"
+            @input="calculatorModel.interestRate = NumberValidator.validateInterval($event.target.value)"/>
             <!--Row 6-->
             <h4 class="dscto-finz-grid-singular-row">Tasa en Dólares</h4>
             <div></div>
@@ -235,7 +236,7 @@ const setChartOptions = () => {
       <aside class="benefits-side">
         <article>
           <div class="capex">
-            <h3 class="data-title">AHORRO EN CAPEX</h3>
+            <h3 class="data-title" style="color: black">AHORRO EN CAPEX</h3>
             <main>
               <div class="capex-price">
                 <h3 class="capex-label">CCR - {{ EquipmentEnum[calculatorModel.equipment]?.label }}</h3>
@@ -255,7 +256,7 @@ const setChartOptions = () => {
           </div>
           <div class="divider"></div>
           <div class="opex">
-            <h1 class="data-title">AHORRO EN OPEX</h1>
+            <h1 class="data-title" style="color: black">AHORRO EN OPEX</h1>
             <main>
               <aside class="opex-info-side">
                 <div class="opex-grid">
@@ -350,7 +351,6 @@ nav{
   color: white;
   font-size: x-large;
   font-family: "Arial Black",sans-serif;
-  -webkit-text-stroke: 1px black;
 }
 
 .form-grid-equipment{
@@ -371,7 +371,6 @@ nav{
   margin: 1rem 0 1rem 0;
   font-size: large;
   font-weight: bolder;
-  -webkit-text-stroke: 1px black;
 }
 
 .dscto-finz-grid{
@@ -385,13 +384,14 @@ nav{
 }
 
 
-.form-sub-subtitle,.price{
+.price{
   color: white;
   text-align: center;
 }
 
 .form-sub-subtitle{
-  -webkit-text-stroke: 1px black;
+  text-align: center;
+  color: #393939;
 }
 
 .promocode{
