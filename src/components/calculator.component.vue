@@ -61,7 +61,7 @@ const mantto = computed(() => {
   return excavators + retroExcavators + skidSteer + currentDifference;
 });
 const repairPartsDiscount = computed(() => {
-  const equipmentSum = calculatorModel.value.numExcavator + calculatorModel.value.numRetroExcavator + calculatorModel.value.numSkidSteer;
+  const equipmentSum = calculatorModel.value.numExcavator + calculatorModel.value.numRetroExcavator + calculatorModel.value.numSkidSteer + calculatorModel.value.numFrontLoader;
   const promocode = PromocodeEnum[calculatorModel.value.promocode]?.num;
   const otherConsumption = OtherConsumptionEnum['MONTHLY_LIST_PRICE'].price - OtherConsumptionEnum['MONTHLY_VV_DISCOUNT'].price;
   return equipmentSum * promocode * otherConsumption;
