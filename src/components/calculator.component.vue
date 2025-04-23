@@ -270,7 +270,7 @@ const setChartOptions = () => {
                   <p>Descuento de Partes de Reparación:</p> <p>{{opexRepairPartsDiscount}}</p>
                   <p>Descuento de H. Corte:</p> <p>{{opexCut}}</p>
                   <div class="divider" id="opex-grid-divider"></div>
-                  <p>Total de Beneficio por Otros Ahorros:</p> <p>{{opexSumOfBenefits}}</p>
+                  <p style="font-weight: bold">Beneficio por Otros Ahorros:</p> <p>{{opexSumOfBenefits}}</p>
                   <small style="grid-column: 1 / span 2; font-size: x-small">*Garantía extendida 24 meses / 4000 horas a Tren de Fuerza y Sistema Hidráulico</small>
                 </div>
               </aside>
