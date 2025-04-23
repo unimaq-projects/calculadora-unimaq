@@ -9,6 +9,7 @@ import Chart from "primevue/chart";
 import InputText from 'primevue/inputtext';
 import FloatLabel from 'primevue/floatlabel';
 import IftaLabel from "primevue/iftalabel";
+import {InputNumber} from "primevue";
 import Select from 'primevue/select';
 import {definePreset} from "@primeuix/themes";
 
@@ -41,5 +42,6 @@ createApp(App)
     .component("pv-float-label", FloatLabel)
     .component("pv-ifta-label", IftaLabel)
     .component("pv-select", Select)
+    .component("pv-input-number", InputNumber)
     .use(router)
     .mount('#app')

@@ -7,6 +7,7 @@ import {PromocodeEnum} from "@/enums/promocode.enum.ts";
 import {Formatter} from "@/utils/formatter.util.ts";
 import {NumberValidator} from "@/utils/numberValidator.util.ts";
 import {OtherConsumptionEnum} from "@/enums/otherConsumptionEnum.js";
+import {InputNumber as PvInputNumber} from "primevue";
 
 defineOptions({
   name: "calculator-component"
@@ -142,7 +143,7 @@ const setChartOptions = () => {
 <template>
   <div class="background">
     <nav>
-      <h1 class="nav-bar-title">UNIMAQ</h1>
+      <h1 class="nav-bar-title">UNIMAQ S.A</h1>
     </nav>
     <main class="content">
       <aside class="data-side">
@@ -197,14 +198,16 @@ const setChartOptions = () => {
             <h4 class="price">{{capexCcrListPrice}}</h4>
             <h4 class="price">{{capexNewListPrice}}</h4>
             <!--Row 3-->
-            <h4 class="dscto-finz-grid-singular-row"> Descuento (%)</h4>
+            <h4 class="dscto-finz-grid-singular-row"> Descuento</h4>
             <pv-float-label variant="on">
-              <pv-input type="number" min="0" max="5" step="1" v-model="calculatorModel.discountCCR" style="width: 100%"
-                        @input="calculatorModel.discountCCR = NumberValidator.validateInterval($event.target.value)"/>
+              <pv-input-number inputId="withoutgrouping" suffix="%" :min="0" :max="5" :step="1" style="width: 100%" fluid showButtons
+                                v-model="calculatorModel.discountCCR"
+                               @input="calculatorModel.discountCCR = NumberValidator.validateInterval($event.target.value)" />
             </pv-float-label>
             <pv-float-label variant="on">
-              <pv-input type="number" min="0" max="100" step="1" v-model="calculatorModel.discountNew" style="width: 100%"
-                        @input="calculatorModel.discountNew = NumberValidator.validateInterval($event.target.value)"/>
+              <pv-input-number inputId="withoutgrouping" suffix="%" :min="0" :max="5" :step="1" style="width: 100%" fluid showButtons
+                               v-model="calculatorModel.discountNew"
+                               @input="calculatorModel.discountNew = NumberValidator.validateInterval($event.target.value)" />
             </pv-float-label>
             <!--Row 4-->
             <h4 class="dscto-finz-grid-singular-row"> Medio de Pago </h4>
@@ -215,8 +218,9 @@ const setChartOptions = () => {
             <!--Row 5-->
             <h4 class="dscto-finz-grid-singular-row"> Tasa Utilizada </h4>
             <div></div>
-            <pv-input type="number" min="0" max="100" step="1" v-model="calculatorModel.interestRate"
-            @input="calculatorModel.interestRate = NumberValidator.validateInterval($event.target.value)"/>
+            <pv-input-number inputId="withoutgrouping" suffix="%" :min="0" :max="100" :step="1" style="width: 100%" fluid showButtons
+                             v-model="calculatorModel.interestRate"
+                             @input="calculatorModel.interestRate = NumberValidator.validateInterval($event.target.value)" />
             <!--Row 6-->
             <h4 class="dscto-finz-grid-singular-row">Tasa en Dólares</h4>
             <div></div>
@@ -303,7 +307,7 @@ const setChartOptions = () => {
 nav{
   width: 100%;
   background: linear-gradient(to right, #B61D1F 0%, #B61D1F 70%, #E1B524 70%, #E1B524 100%);
-  border-bottom: 4px solid black;
+  box-shadow: 2px 2px 2px 0 rgba(0,0,0,0.2);
   color: white;
 }
 
