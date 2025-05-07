@@ -58,8 +58,9 @@ const mantto = computed(() => {
   const excavators = EquipmentEnum['D320'].difference * promocode * calculatorModel.value.numExcavator;
   const retroExcavators = EquipmentEnum['F420'].difference * promocode * calculatorModel.value.numRetroExcavator;
   const skidSteer = EquipmentEnum['D246'].difference * promocode * calculatorModel.value.numSkidSteer;
+  const frontLoader = EquipmentEnum['K938'].difference * promocode * calculatorModel.value.numFrontLoader;
   const currentDifference = EquipmentEnum[calculatorModel.value.equipment]?.difference * promocode;
-  return excavators + retroExcavators + skidSteer + currentDifference;
+  return excavators + retroExcavators + skidSteer + frontLoader + currentDifference;
 });
 const repairPartsDiscount = computed(() => {
   const equipmentSum = calculatorModel.value.numExcavator + calculatorModel.value.numRetroExcavator + calculatorModel.value.numSkidSteer + calculatorModel.value.numFrontLoader;
