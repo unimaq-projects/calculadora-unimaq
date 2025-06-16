@@ -201,12 +201,12 @@ const setChartOptions = () => {
             <!--Row 3-->
             <h4 class="dscto-finz-grid-singular-row"> Descuento</h4>
             <pv-float-label variant="on">
-              <pv-input-number inputId="withoutgrouping" suffix="%" :min="0" :max="5" :step="1" style="width: 100%" fluid showButtons
+              <pv-input-number inputId="withoutgrouping" suffix="%" :min="0" :max="100" :step="1" style="width: 100%" fluid showButtons
                                 v-model="calculatorModel.discountCCR"
                                @input="calculatorModel.discountCCR = NumberValidator.validateInterval($event.target.value)" />
             </pv-float-label>
             <pv-float-label variant="on">
-              <pv-input-number inputId="withoutgrouping" suffix="%" :min="0" :max="5" :step="1" style="width: 100%" fluid showButtons
+              <pv-input-number inputId="withoutgrouping" suffix="%" :min="0" :max="100" :step="1" style="width: 100%" fluid showButtons
                                v-model="calculatorModel.discountNew"
                                @input="calculatorModel.discountNew = NumberValidator.validateInterval($event.target.value)" />
             </pv-float-label>
